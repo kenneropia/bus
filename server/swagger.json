@@ -1,0 +1,274 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "description": "This is a sample server.",
+    "version": "0.0.1",
+    "title": "Noter"
+  },
+  "servers": [
+    {
+      "url": "https://uptick-project.onrender.com/api",
+      "description": "url for live development"
+    },
+    {
+      "url": "http://localhost:3000/api",
+      "description": "url for local development"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "user",
+      "description": "Operations about users"
+    },
+    {
+      "name": "note",
+      "description": "Operations about Notes"
+    }
+  ],
+  "schemes": ["https", "http"],
+  "paths": {
+    "/user/auth/login": {
+      "post": {
+        "tags": ["user"],
+        "summary": "login a user",
+        "description": "",
+        "operationId": "loginUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "aaron@kenny.com",
+                    "description": "email for user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "12345678",
+                    "description": "password for user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "400": { "message": "wrong login details" } }
+      }
+    },
+
+    "/user/auth/signup": {
+      "post": {
+        "tags": ["user"],
+        "summary": "signup a new user",
+        "description": "",
+        "operationId": "siginupUser",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "aaron@kenny.com",
+                    "description": "email for user"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "aaron",
+                    "description": "name for user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "12345678",
+                    "description": "password for user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "400": { "message": "wrong login details" } }
+      }
+    },
+    "/user/auth/me": {
+      "get": {
+        "tags": ["user"],
+        "summary": "get user profile",
+        "description": "",
+        "operationId": "getUser",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": { "user": { "email": "aaron@keey.com", "name": "aaron" } }
+        }
+      }
+    },
+    "/notes/create-note": {
+      "post": {
+        "tags": ["note"],
+        "summary": "create a note",
+        "description": "",
+        "operationId": "createNote",
+
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "food 4 thougts",
+                    "description": "etitle of the note"
+                  },
+                  "content": {
+                    "type": "string",
+                    "example": "content of food 4 thougts",
+                    "description": "content of the note"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "message": "ok" } }
+      }
+    },
+    "/notes": {
+      "get": {
+        "tags": ["note"],
+        "summary": "all notes for a user",
+        "description": "",
+        "operationId": "getAllNotes",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": { "201": { "message": "ok" } }
+      }
+    },
+    "/notes/{noteId}": {
+      "get": {
+        "tags": ["note"],
+        "summary": "all notes for a user",
+        "description": "",
+        "operationId": "getNote",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "noteId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "note id"
+          }
+        ],
+        "responses": { "201": { "message": "ok" } }
+      },
+      "patch": {
+        "tags": ["note"],
+        "summary": "update a note",
+        "description": "",
+        "operationId": "updateNote",
+
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "noteId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "note id"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "food 4 thougts",
+                    "description": "etitle of the note"
+                  },
+                  "content": {
+                    "type": "string",
+                    "example": "content of food 4 thougts",
+                    "description": "content of the note"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "message": "ok" } }
+      },
+      "delete": {
+        "tags": ["note"],
+        "summary": "all notes for a user",
+        "description": "",
+        "operationId": "deleteNote",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "noteId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "note id"
+          }
+        ],
+        "responses": { "204": { "message": "ok" } }
+      }
+    }
+  }
+}
