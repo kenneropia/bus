@@ -63,7 +63,7 @@ export const roleChecker =
     if (roles.includes(req.user.role)) return next();
     return res
       .status(403)
-      .json({ status: "error", message: "unauthorized acess" });
+      .json({ status: "error", message: "unauthorized access" });
   };
 
 export function getCurrentDate() {

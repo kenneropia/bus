@@ -190,9 +190,9 @@ export const getCurrentJourney = async (req: Request, res: Response) => {
     });
     const studentObj = journey?.seats?.length
       ? {
-          student: journey.seats[0].student,
-          seatNumber: journey.seats[0].seatNumber,
-        }
+        student: journey.seats[0].student,
+        seatNumber: journey.seats[0].seatNumber,
+      }
       : {};
 
     journey = { ...journey, ...studentObj };
@@ -211,26 +211,46 @@ export const getCurrentJourney = async (req: Request, res: Response) => {
   return res.json({ journey });
 };
 
+
+
+export const cancelJourney = async (req: Request, res: Response) => {
+  const journeyId = req.params.journeyId
+  const seat = await db.seat.findFirst({
+    where: {
+      journeyId,
+      studentId: req.user.id
+    }
+  })
+  await db.seat.delete({
+    where: {
+      id: seat?.id
+    }
+  })
+  res.status(204).json({})
+}
+
 export const getAllJourneys = async (req: Request, res: Response) => {
+  console.log(req.user.role);
+
   const searchQuery: Prisma.JourneyFindManyArgs = req.query.search
     ? {
-        where: {
-          OR: [
-            {
-              id: {
-                contains: req.query.search as string,
-              },
+      where: {
+        OR: [
+          {
+            id: {
+              contains: req.query.search as string,
             },
-            { date: { contains: req.query.search as string } },
-            { destination: { contains: req.query.search as string } },
+          },
+          { date: { contains: req.query.search as string } },
+          { destination: { contains: req.query.search as string } },
 
-            { section: { contains: req.query.search as string } },
-          ],
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      }
+          { section: { contains: req.query.search as string } },
+        ],
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    }
     : {};
 
   let journeys = undefined;
@@ -247,6 +267,7 @@ export const getAllJourneys = async (req: Request, res: Response) => {
       orderBy: searchQuery.orderBy,
       include: {
         seats: true,
+        driver: true
       },
     });
   }
@@ -260,6 +281,7 @@ export const getAllJourneys = async (req: Request, res: Response) => {
       },
       orderBy: searchQuery.orderBy,
     });
+    console.log(journeys);
   }
 
   if (req.user.role == "admin") {
@@ -270,6 +292,7 @@ export const getAllJourneys = async (req: Request, res: Response) => {
       },
     });
   }
+
 
   return res.json({ journeys });
 };

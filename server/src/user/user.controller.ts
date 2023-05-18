@@ -44,7 +44,7 @@ const login = async (
   res: Response
 ) => {
   let user = await db.user.findFirst({
-    select: { email: true, name: true, id: true, password: true, role: true },
+    select: { email: true, name: true, id: true, password: true, role: true,verified:true },
     where: { email: body.email },
   });
   if (!user) {

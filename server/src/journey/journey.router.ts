@@ -11,12 +11,12 @@ import {
   getCurrentJourney,
   deleteJourney,
   getJourneySummary,
+  cancelJourney
 } from "./journey.controller";
 // import { updateNoteSchema } from "./journey.schema";
 
 const journeyRouter = Router();
 
-const checkStudent = roleChecker("student");
 journeyRouter.use(isAuth);
 
 journeyRouter.post("/", roleChecker("admin"), createJourney);
@@ -26,11 +26,13 @@ journeyRouter.get("/", getAllJourneys);
 
 journeyRouter.post("/book-seat", bookSeat);
 
-journeyRouter.get("/journey-summary", roleChecker("admin"), getJourneySummary);
+journeyRouter.get("/journey-summary", getJourneySummary);
 journeyRouter.get("/:journeyId", getAJourney);
 
-journeyRouter.delete("/:journeyId", roleChecker("admin"), deleteJourney);
+journeyRouter.delete("/:journeyId", deleteJourney);
 journeyRouter.patch("/:journeyId/finish", finishJourney);
+
+journeyRouter.delete("/:journeyId/cancel", cancelJourney);
 journeyRouter.get("/:destinationId/get-available-seats", getAvailableSeats);
 // journeyRouter.patch(
 //   "/:noteId",

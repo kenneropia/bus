@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     const ogFileNameSplit = file.originalname.split(".");
 
-    req.body.filename = `images/${ogFileNameSplit[ogFileNameSplit.length - 1]}`;
+    req.body.filename = `/images/${req.body.name}.${ogFileNameSplit[ogFileNameSplit.length - 1]}`;
     cb(null, `${req.body.name}.${ogFileNameSplit[ogFileNameSplit.length - 1]}`);
   },
 });
