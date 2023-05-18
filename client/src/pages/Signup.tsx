@@ -33,7 +33,6 @@ export default function Signup() {
   useEffect(() => {
     const fetchDestinations = async () => {
       const fetchedDestinations = await API.get("/destination/generate-slots");
-
       setDestinations(fetchedDestinations.data.destinations);
     };
     fetchDestinations();
@@ -185,7 +184,7 @@ export default function Signup() {
                 Destinations
               </label>
               <select
-                defaultValue={destinations[0]}
+                defaultValue={"item"}
                 className="w-full p-2 border rounded outline-2"
                 onChange={(e) =>
                   setForm((prev) => {
@@ -196,6 +195,9 @@ export default function Signup() {
                 id="role"
                 name="role"
               >
+                <option key={"item"} value={"item"} disabled>
+                  Select a destination
+                </option>
                 {destinations.map((item) => {
                   return (
                     <option key={item} value={item}>
@@ -229,6 +231,7 @@ export default function Signup() {
               (!form.email && true) ||
               (!form.password && true) ||
               (!form.role && true) ||
+              (!form.destination && true) ||
               (!image && form.role == "driver" && true)
             }
             type="submit"

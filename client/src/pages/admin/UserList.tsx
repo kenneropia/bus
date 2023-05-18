@@ -66,7 +66,7 @@ const UserList = () => {
       <table className="w-full border-collapse">
         <thead className="bg-gray-200">
           <tr className="[&>*]:w-[14%]">
-          <th className="p-2 text-left">S/N</th>
+            <th className="p-2 text-left">S/N</th>
             <th className="p-2 text-left">Email</th>
             <th className="p-2 text-left">Name</th>
             <th className="p-2 text-left">Account Type</th>
@@ -76,9 +76,9 @@ const UserList = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user,idx) => (
+          {users.map((user, idx) => (
             <tr key={user.id} className="space-x-5 border-b border-gray-300">
-               <td className="p-2">{1 + idx}</td>
+              <td className="p-2">{1 + idx}</td>
               <td className="p-2">{user.email}</td>
               <td className="p-2">{user.name}</td>
               <td className="p-2">{user.role}</td>
@@ -88,7 +88,8 @@ const UserList = () => {
                   <img
                     className="active:scale-[2.9] hover:scale-[2.9] delay-500"
                     src={
-                      ("http://localhost:3000" + user.driverLicense) as string
+                      ("https://bus-5htr.onrender.com" +
+                        user.driverLicense) as string
                     }
                     alt=""
                   />
