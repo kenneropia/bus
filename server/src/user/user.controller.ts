@@ -44,7 +44,14 @@ const login = async (
   res: Response
 ) => {
   let user = await db.user.findFirst({
-    select: { email: true, name: true, id: true, password: true, role: true,verified:true },
+    select: {
+      email: true,
+      name: true,
+      id: true,
+      password: true,
+      role: true,
+      verified: true,
+    },
     where: { email: body.email },
   });
   if (!user) {
@@ -91,7 +98,13 @@ export const getAllUsers = async (req: Request, res: Response) => {
           createdAt: "desc",
         },
       }
-    : {};
+    : {
+        where: {
+          NOT: {
+            role: "admin",
+          },
+        },
+      };
 
   const users = await db.user.findMany({
     ...searchQuery,
