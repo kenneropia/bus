@@ -231,7 +231,7 @@ export default function Signup() {
               (!form.email && true) ||
               (!form.password && true) ||
               (!form.role && true) ||
-              (!form.destination && true) ||
+              (!form.destination && form.role == "driver" && true) ||
               (!image && form.role == "driver" && true)
             }
             type="submit"
