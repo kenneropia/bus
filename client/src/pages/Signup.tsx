@@ -138,6 +138,7 @@ export default function Signup() {
               Password
             </label>
             <input
+              hidden={true}
               className="w-full p-2 border rounded outline-2 "
               onChange={(e) =>
                 setForm((prev) => {
