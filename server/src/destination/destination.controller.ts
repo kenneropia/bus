@@ -27,6 +27,7 @@ export const getDestinationsWithDrivers = async (
       journeys: {
         where: {
           date: getCurrentDate(),
+          finished: false,
         },
         take: 3,
       },
@@ -39,7 +40,8 @@ export const getDestinationsWithDrivers = async (
     },
   });
 
-  const destinationsWithDrivers: Record<typeof destinations[number], any> = {};
+  const destinationsWithDrivers: Record<(typeof destinations)[number], any> =
+    {};
   driversWithLessThanThreeJourneys.forEach((item) => {
     if (destinationsWithDrivers[item.destination as string]) {
       destinationsWithDrivers[item.destination as string].push(item);
@@ -64,7 +66,7 @@ export const getAvailableDestinationsForNewDrivers = async (
     },
   });
 
-  const destinationsValues: Record<typeof destinations[number], string> = {};
+  const destinationsValues: Record<(typeof destinations)[number], string> = {};
 
   destinations.forEach((item) => {
     destinationsValues[item] = item;
