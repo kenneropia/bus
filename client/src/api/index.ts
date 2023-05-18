@@ -5,7 +5,7 @@ const API = axios.create({
   baseURL:
     process.env.NODE_ENV == "development"
       ? "http://localhost:3000/api"
-      : "https://bus-5htr.onrender.com",
+      : "https://bus-5htr.onrender.com/api",
   headers: {
     "Content-type": "application/json",
   },
