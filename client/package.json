@@ -9,7 +9,9 @@
   "scripts": {
     "setup": "yarn install",
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite start"
   },
   "dependencies": {
     "@vitejs/plugin-react-swc": "^3.0.1",

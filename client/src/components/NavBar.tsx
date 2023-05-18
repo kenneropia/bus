@@ -4,7 +4,9 @@ import useAuth from "../hooks/useAuth";
 
 function Navbar() {
   const { getUser, logout } = useAuth();
+  // console.log( getUser()?.role == 'admin'||(getUser()?.verified  && getUser()?.role == 'driver') || getUser()?.role == "student")
 
+ 
   const navigate = useNavigate();
   return (
     <nav className="py-4 bg-gray-200">
@@ -19,7 +21,7 @@ function Navbar() {
             </a>
           </div>
           <div className="flex items-baseline justify-center px-2 mt-2 space-x-4 sm:px-0 md:mt-0 md:justify-end md:w-full md:flex md:ml-10">
-            {getUser()?.role !== "admin" && (
+            {getUser()?.role !== "admin" && (getUser()?.verified  && getUser()?.role == 'driver') || getUser()?.role == "student" ? (
               <>
                 <Link
                   to="/ride"
@@ -28,15 +30,14 @@ function Navbar() {
                   View Current Ride
                 </Link>
               </>
-            )}
-
-            <Link
+            ):null}
+         { getUser()?.role == 'admin' || (getUser()?.verified  && getUser()?.role == 'driver') || getUser()?.role == "student" ?( <Link
               to="/"
               className="px-3 py-2 text-sm font-medium text-blue-700"
             >
               View Rides
-            </Link>
-
+            </Link>):null
+}
             {getUser()?.role == "student" && (
               <>
                 <Link

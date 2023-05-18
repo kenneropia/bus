@@ -25,8 +25,9 @@ export const getUser = () => {
 
 const makeLoginAPIRequest = async (loginData: LoginData) => {
   const {
-    data: { name, id, email, token, role },
+    data: { name, id, email, token, role,verified },
   } = await API.post("/user/login", loginData);
+console.log(verified);
 
   let user = {
     name: name,
@@ -34,6 +35,7 @@ const makeLoginAPIRequest = async (loginData: LoginData) => {
     email,
     role,
     token: token,
+    verified,
     jwt_created_at: Date.now(),
     jwt_expired_at: getTime(add(Date.now(), { days: 29 })),
   };

@@ -172,7 +172,7 @@ const RideForm = () => {
 
   return (
     <form
-      className="max-w-md p-4 mx-auto mt-8 rounded-md shadow-md"
+      className=" w-7/12 p-4 mx-auto mt-8 rounded-md shadow-md"
       onSubmit={handleSubmit}
     >
       <div className="mb-4">
@@ -198,10 +198,17 @@ const RideForm = () => {
       </div>
 
       {availableSeats.length ? (
-        <BusRadio
+        <fieldset className="inline-flex w-full mb-5 justify-between">
+          <BusRadio
           availableSeats={availableSeats}
           setSeatNumber={setSeatNumber}
         />
+        <div className="w-[300px]">
+          <h1 className="block mb-2 font-bold text-gray-700">Sitting Arrangement</h1>
+          <img className="w-full" src="/assets/img/seat.jpg" alt=""  />
+        </div>
+        </fieldset>
+        
       ) : null}
       {errorMessage && (
         <p className="text-sm font-medium text-red-500">{errorMessage}</p>

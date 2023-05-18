@@ -24,8 +24,8 @@ export default function Login() {
 
     const loginSchema = z
       .object({
-        email: z.string().email().max(15),
-        password: z.string().min(8).max(15),
+        email: z.string().email(),
+        password: z.string().min(8),
       })
       .required();
 

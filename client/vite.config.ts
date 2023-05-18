@@ -15,4 +15,10 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    port: Number(process.env.PORT) || 3030,
+  },
+  preview: {
+    port: Number(process.env.PORT) || 8080,
+  },
 });

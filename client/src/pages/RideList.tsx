@@ -12,26 +12,38 @@ const ActionGroupForJourney = ({
   journey,
   role,
   setJourneys,
-  journeys,
+  journeys
 }: {
   setJourneys: React.Dispatch<React.SetStateAction<TypedJourney[]>>;
   journey: TypedJourney;
   role: string;
-  journeys: TypedJourney[];
+  journeys:TypedJourney[]
 }) => {
   const handleRideDelete = async (journeyId: string) => {
     try {
       const response = await API.delete(`/journey/${journeyId}`);
-      console.log(response);
       toast.success("Ride deleted successfully");
-      setJourneys(journeys.filter((item) => item.id !== journeyId));
+    setJourneys(journeys.filter((item)=>item.id !== journeyId))
       // do something with the response
     } catch (error: any) {
-      toast(error.response.data.message);
+      toast.error(error.response.data.message);
       console.log(error);
     }
   };
-
+const handleRideCancel = async (journeyId: string) => {
+  try {
+    const response = await API.delete(`/journey/${journeyId}`);
+  
+  
+    setJourneys(journeys.filter((item) => item.id !== journeyId))
+    toast.success("Ride cancelled successfully");
+    
+    // do something with the response
+  } catch (error: any) {
+    toast.error(error.response.data.message);
+    console.log(error);
+  }
+};
   const handleRideFinish = async (journeyId: string) => {
     try {
       const response = await API.patch(`/journey/${journeyId}/finish`);
@@ -44,15 +56,24 @@ const ActionGroupForJourney = ({
       });
       // do something with the response
     } catch (error: any) {
-      toast(error.response.data.message, { duration: 15 });
+      toast.error(error.response.data.message, { duration: 15 });
       console.log(error);
     }
   };
   if (role == "student") {
     return (
+      <>
       <td className="p-3 text-sm text-gray-700">
         {journey.seats[0].seatNumber}
       </td>
+        <td className="p-3 text-sm text-gray-700">
+        <button
+          onClick={() => handleRideCancel(journey.id)}
+          className="px-4 py-2 text-gray-700 transition-colors bg-red-300 rounded-md hover:bg-gray-400 hover:text-gray-900"
+        >
+          Cancel Ride
+        </button>
+      </td></>
     );
   }
 
@@ -119,6 +140,9 @@ const RideList = () => {
         <table className="w-full overflow-scroll text-sm table-auto">
           <thead className="border-b-2 border-gray-200 bg-gray-50">
             <tr className="">
+                <th className="p-3 text-sm font-semibold tracking-wide text-left">
+                S/N
+              </th>
               <th className="p-3 text-sm font-semibold tracking-wide text-left">
                 Ride ID
               </th>
@@ -130,27 +154,35 @@ const RideList = () => {
               </th>
               <th className="p-3 text-sm font-semibold tracking-wide text-left">
                 Section
-              </th>
-
-              {auth.getUser()?.role == "driver" ? (
-                <th className="p-3 text-sm font-semibold tracking-wide text-left">
-                  Action
-                </th>
-              ) : (
+              </th> 
+              
+              {auth.getUser()?.role == "student"  && (
                 <th className="p-3 text-sm font-semibold tracking-wide text-left">
                   Seat Number
                 </th>
               )}
+              
+              
+            
+                <th className="p-3 text-sm font-semibold tracking-wide text-left">
+                  Action
+                </th>
+            
+               
+              
             </tr>
           </thead>
           <tbody>
-            {journeys.map((journey) => (
+            {journeys.map((journey,idx) => (
               <tr
                 key={journey.id}
                 className={`bg-gray-50 ${
                   journey.finished ? pastJourneyStyle : ""
                 }`}
               >
+               <td className="p-3 text-sm text-gray-700">
+                  {1 + idx}
+                </td>
                 <td className="p-3 text-sm text-gray-700">
                   <Link
                     className="font-bold text-blue-500 hover:underline"
@@ -170,9 +202,9 @@ const RideList = () => {
                 </td>
                 <ActionGroupForJourney
                   journey={journey}
-                  journeys={journeys}
                   setJourneys={setJourneys}
                   role={auth.getUser()?.role as string}
+                  journeys={journeys}
                 />
               </tr>
             ))}
