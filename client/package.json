@@ -10,8 +10,8 @@
     "setup": "yarn install",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "start": "vite start"
+    "preview": "vite preview --host",
+    "start": "vite start --host"
   },
   "dependencies": {
     "@vitejs/plugin-react-swc": "^3.0.1",
