@@ -12,38 +12,39 @@ const ActionGroupForJourney = ({
   journey,
   role,
   setJourneys,
-  journeys
+  journeys,
 }: {
   setJourneys: React.Dispatch<React.SetStateAction<TypedJourney[]>>;
   journey: TypedJourney;
   role: string;
-  journeys:TypedJourney[]
+  journeys: TypedJourney[];
 }) => {
+  const auth = useAuth();
+
   const handleRideDelete = async (journeyId: string) => {
     try {
       const response = await API.delete(`/journey/${journeyId}`);
       toast.success("Ride deleted successfully");
-    setJourneys(journeys.filter((item)=>item.id !== journeyId))
+      setJourneys(journeys.filter((item) => item.id !== journeyId));
       // do something with the response
     } catch (error: any) {
       toast.error(error.response.data.message);
       console.log(error);
     }
   };
-const handleRideCancel = async (journeyId: string) => {
-  try {
-    const response = await API.delete(`/journey/${journeyId}`);
-  
-  
-    setJourneys(journeys.filter((item) => item.id !== journeyId))
-    toast.success("Ride cancelled successfully");
-    
-    // do something with the response
-  } catch (error: any) {
-    toast.error(error.response.data.message);
-    console.log(error);
-  }
-};
+  const handleRideCancel = async (journeyId: string) => {
+    try {
+      const response = await API.delete(`/journey/${journeyId}`);
+
+      setJourneys(journeys.filter((item) => item.id !== journeyId));
+      toast.success("Ride cancelled successfully");
+
+      // do something with the response
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+      console.log(error);
+    }
+  };
   const handleRideFinish = async (journeyId: string) => {
     try {
       const response = await API.patch(`/journey/${journeyId}/finish`);
@@ -63,17 +64,23 @@ const handleRideCancel = async (journeyId: string) => {
   if (role == "student") {
     return (
       <>
-      <td className="p-3 text-sm text-gray-700">
-        {journey.seats[0].seatNumber}
-      </td>
         <td className="p-3 text-sm text-gray-700">
-        <button
-          onClick={() => handleRideCancel(journey.id)}
-          className="px-4 py-2 text-gray-700 transition-colors bg-red-300 rounded-md hover:bg-gray-400 hover:text-gray-900"
-        >
-          Cancel Ride
-        </button>
-      </td></>
+          {
+            journey.seats.filter((seat) => {
+              if (auth.getUser()?.id == seat.studentId) return true;
+              return false;
+            })[0].seatNumber
+          }
+        </td>
+        <td className="p-3 text-sm text-gray-700">
+          <button
+            onClick={() => handleRideCancel(journey.id)}
+            className="px-4 py-2 text-gray-700 transition-colors bg-red-300 rounded-md hover:bg-gray-400 hover:text-gray-900"
+          >
+            Cancel Ride
+          </button>
+        </td>
+      </>
     );
   }
 
@@ -133,14 +140,14 @@ const RideList = () => {
   return (
     <div className="w-full p-4 mx-auto mt-6 overflow-auto border-2 border-gray-200 rounded-md">
       <SearchForm searchQuery={search} setSearchQuery={setSearch} />
-      <h2 className="mb-4 text-2xl font-bold">List of Journeys</h2>
+      <h2 className="mb-4 text-2xl font-bold">List of Rides</h2>
       {loading ? (
-        <p>Loading journeys...</p>
+        <p>Loading rides...</p>
       ) : journeys.length > 0 ? (
         <table className="w-full overflow-scroll text-sm table-auto">
           <thead className="border-b-2 border-gray-200 bg-gray-50">
             <tr className="">
-                <th className="p-3 text-sm font-semibold tracking-wide text-left">
+              <th className="p-3 text-sm font-semibold tracking-wide text-left">
                 S/N
               </th>
               <th className="p-3 text-sm font-semibold tracking-wide text-left">
@@ -154,35 +161,28 @@ const RideList = () => {
               </th>
               <th className="p-3 text-sm font-semibold tracking-wide text-left">
                 Section
-              </th> 
-              
-              {auth.getUser()?.role == "student"  && (
+              </th>
+
+              {auth.getUser()?.role == "student" && (
                 <th className="p-3 text-sm font-semibold tracking-wide text-left">
                   Seat Number
                 </th>
               )}
-              
-              
-            
-                <th className="p-3 text-sm font-semibold tracking-wide text-left">
-                  Action
-                </th>
-            
-               
-              
+
+              <th className="p-3 text-sm font-semibold tracking-wide text-left">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
-            {journeys.map((journey,idx) => (
+            {journeys.map((journey, idx) => (
               <tr
                 key={journey.id}
                 className={`bg-gray-50 ${
                   journey.finished ? pastJourneyStyle : ""
                 }`}
               >
-               <td className="p-3 text-sm text-gray-700">
-                  {1 + idx}
-                </td>
+                <td className="p-3 text-sm text-gray-700">{1 + idx}</td>
                 <td className="p-3 text-sm text-gray-700">
                   <Link
                     className="font-bold text-blue-500 hover:underline"
@@ -218,7 +218,7 @@ const RideList = () => {
               <Link to="/rides/new" className="text-blue-600 hover:underline">
                 Click here
               </Link>
-              <> to create a new ride.</>
+              <> to book a new ride.</>
             </p>
           )}
           {auth.getUser()?.role == "driver" &&

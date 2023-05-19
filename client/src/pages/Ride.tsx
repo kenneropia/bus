@@ -33,6 +33,7 @@ const Ride = () => {
     fetchJourney();
   }, [journeyId]);
 
+  console.log(journey?.seats);
   return (
     <div className="max-w-md p-6 mx-auto mt-2 bg-gray-200 rounded-md shadow-md">
       <h2 className="mb-4 text-lg font-bold text-center">RIDE RECEIPT</h2>
@@ -85,6 +86,31 @@ const Ride = () => {
                   <span className="mr-2 font-bold">Seat No:</span>
                   {journey.seatNumber}
                 </p>
+              </div>
+              <hr className="my-2" />
+            </>
+          )}
+          <hr className="my-2" />
+
+          {auth.getUser()?.role == "driver" && (
+            <>
+              <div>
+                <h2 className="mb-2 font-bold text-md">STUDENTS LIST</h2>
+                {journey.seats.map((item) => {
+                  return (
+                    <>
+                      <p className="mb-2 text-sm text-gray-700">
+                        <span className="mr-2 font-bold">Student Name:</span>
+                        {item.student.name}
+                      </p>
+
+                      <p className="mb-2 text-sm text-gray-700">
+                        <span className="mr-2 font-bold">Seat No:</span>
+                        {item.seatNumber}
+                      </p>
+                    </>
+                  );
+                })}
               </div>
               <hr className="my-2" />
             </>
