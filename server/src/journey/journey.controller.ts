@@ -140,22 +140,41 @@ export const createJourney = async (req: Request, res: Response) => {
 };
 
 export const getAJourney = async (req: Request, res: Response) => {
-  const journey = await db.journey.findFirst({
-    where: {
-      id: req.params.journeyId,
-    },
-    include: {
-      driver: true,
-      seats: {
-        where: {
-          studentId: req.user.id,
-        },
-        include: {
-          student: true,
+  let journey = null;
+  if (req.user.role == "student") {
+    journey = await db.journey.findFirst({
+      where: {
+        id: req.params.journeyId,
+      },
+      include: {
+        driver: true,
+        seats: {
+          where: {
+            studentId: req.user.id,
+          },
+          include: {
+            student: true,
+          },
         },
       },
-    },
-  });
+    });
+  } else {
+    journey = await db.journey.findFirst({
+      where: {
+        id: req.params.journeyId,
+      },
+      include: {
+        driver: true,
+        seats: {
+          where: {},
+          select: {
+            student: true,
+            seatNumber: true,
+          },
+        },
+      },
+    });
+  }
   const student =
     journey && req.user.role == "student" && journey?.seats[0].student;
 
