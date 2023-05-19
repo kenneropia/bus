@@ -27,7 +27,6 @@ export const getDestinationsWithDrivers = async (
       journeys: {
         where: {
           date: getCurrentDate(),
-          finished: false,
         },
         take: 3,
       },
@@ -49,6 +48,8 @@ export const getDestinationsWithDrivers = async (
       destinationsWithDrivers[item.destination as string] = [item];
     }
   });
+
+  console.log(destinationsWithDrivers);
 
   return res.json({ destinations: destinationsWithDrivers });
 };

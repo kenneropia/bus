@@ -190,9 +190,9 @@ export const getCurrentJourney = async (req: Request, res: Response) => {
     });
     const studentObj = journey?.seats?.length
       ? {
-        student: journey.seats[0].student,
-        seatNumber: journey.seats[0].seatNumber,
-      }
+          student: journey.seats[0].student,
+          seatNumber: journey.seats[0].seatNumber,
+        }
       : {};
 
     journey = { ...journey, ...studentObj };
@@ -203,71 +203,76 @@ export const getCurrentJourney = async (req: Request, res: Response) => {
         date: getCurrentDate(),
         section: getSectionOfDay(),
       },
+
       include: {
         driver: true,
+
+        seats: {
+          select: {
+            student: true,
+            seatNumber: true,
+          },
+        },
       },
     });
+    console.log(journey?.seats.map((item) => item.student));
   }
   return res.json({ journey });
 };
 
-
-
 export const cancelJourney = async (req: Request, res: Response) => {
-  const journeyId = req.params.journeyId
+  const journeyId = req.params.journeyId;
   const seat = await db.seat.findFirst({
     where: {
       journeyId,
-      studentId: req.user.id
-    }
-  })
+      studentId: req.user.id,
+    },
+  });
   await db.seat.delete({
     where: {
-      id: seat?.id
-    }
-  })
-  res.status(204).json({})
-}
+      id: seat?.id,
+    },
+  });
+  res.status(204).json({});
+};
 
 export const getAllJourneys = async (req: Request, res: Response) => {
-  console.log(req.user.role);
-
   const searchQuery: Prisma.JourneyFindManyArgs = req.query.search
     ? {
-      where: {
-        OR: [
-          {
-            id: {
-              contains: req.query.search as string,
+        where: {
+          OR: [
+            {
+              id: {
+                contains: req.query.search as string,
+              },
             },
-          },
-          { date: { contains: req.query.search as string } },
-          { destination: { contains: req.query.search as string } },
+            { date: { contains: req.query.search as string } },
+            { destination: { contains: req.query.search as string } },
 
-          { section: { contains: req.query.search as string } },
-        ],
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    }
+            { section: { contains: req.query.search as string } },
+          ],
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      }
     : {};
 
-  let journeys = undefined;
+  let journeys;
   if (req.user.role == "student") {
     journeys = await db.journey.findMany({
       where: {
+        ...searchQuery.where,
         seats: {
           some: {
             studentId: req.user.id,
           },
         },
-        ...searchQuery.where,
       },
       orderBy: searchQuery.orderBy,
       include: {
         seats: true,
-        driver: true
+        driver: true,
       },
     });
   }
@@ -293,7 +298,6 @@ export const getAllJourneys = async (req: Request, res: Response) => {
     });
   }
 
-
   return res.json({ journeys });
 };
 
@@ -313,7 +317,7 @@ export const getAavailableSeats = async (req: Request, res: Response) => {
   const availableSits = allSitsArray.filter(
     (seatNumber) => !occupiedSitsArray.includes(seatNumber)
   );
-
+  console.log(availableSits);
   return res.json({ availableSits });
 };
 
@@ -324,6 +328,7 @@ export async function bookSeat(req: Request, res: Response) {
       destination,
       section: getSectionOfDay(),
       date: getCurrentDate(),
+      finished: false,
     },
     select: {
       _count: true,
@@ -351,7 +356,7 @@ export async function bookSeat(req: Request, res: Response) {
         .status(409)
         .json({ status: "error", message: "This bus is filled up already" });
     }
-    console.log("userr", req.user.id);
+
     if (journey?._count.seats <= 8) {
       const seat = await db.seat.create({
         data: {
@@ -374,6 +379,7 @@ export async function bookSeat(req: Request, res: Response) {
         none: {
           date: getCurrentDate(),
           section: getSectionOfDay(),
+          finished: false,
         },
       },
     },
