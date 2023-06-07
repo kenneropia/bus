@@ -8,42 +8,44 @@ datasource db {
 }
 
 model User {
-  id            Int     @id @default(autoincrement())
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  email         String     @unique
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  email         String    @unique
   name          String
   password      String?
-  role          String @default("student")
+  role          String    @default("student")
   driverLicense String?
   destination   String?
-  verified   Boolean @default(false)
-  journeys      Journey[] 
-  seats      Seat[] 
+  verified      Boolean   @default(false)
+  journeys      Journey[]
+  seats         Seat[]
 }
 
 model Journey {
-  id              Int     @id @default(autoincrement())
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   destination String
-  section      String
-  date         String
-  driver       User      @relation(fields: [driverId], references: [id], onDelete: Cascade)
-  driverId     Int
-  finished Boolean @default(false)
-  seats     Seat[]
-  @@unique([ destination, date, section])
+  section     String
+  date        String
+  driver      User     @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  driverId    Int
+  finished    Boolean  @default(false)
+  seats       Seat[]
+
+  @@unique([destination, date, section])
 }
 
 model Seat {
-  id       Int     @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  seatNumber   Int
-  journey      Journey? @relation(fields: [journeyId], references: [id], onDelete: Cascade)
-  journeyId    Int
-  student      User?    @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  studentId    Int
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  seatNumber Int
+  journey    Journey? @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  journeyId  Int
+  student    User?    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId  Int
+
   @@unique([studentId, journeyId])
 }
