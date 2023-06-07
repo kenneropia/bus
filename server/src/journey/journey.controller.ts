@@ -86,7 +86,7 @@ export const getJourneySummary = async (req: Request, res: Response) => {
 export const deleteJourney = async (req: Request, res: Response) => {
   const journey = await db.journey.delete({
     where: {
-      id: req.params.journeyId,
+      id: +req.params.journeyId,
     },
   });
   return res.json({ journey });
@@ -96,7 +96,7 @@ export const finishJourney = async (req: Request, res: Response) => {
   const journey = await db.journey.findFirst({
     where: {
       driverId: req.user.id,
-      id: req.params.journeyId,
+      id: +req.params.journeyId,
     },
   });
   if (!journey) {
@@ -104,7 +104,7 @@ export const finishJourney = async (req: Request, res: Response) => {
   }
   await db.journey.update({
     where: {
-      id: req.params.journeyId,
+      id: +req.params.journeyId,
     },
     data: {
       finished: true,
@@ -144,7 +144,7 @@ export const getAJourney = async (req: Request, res: Response) => {
   if (req.user.role == "student") {
     journey = await db.journey.findFirst({
       where: {
-        id: req.params.journeyId,
+        id: +req.params.journeyId,
       },
       include: {
         driver: true,
@@ -161,7 +161,7 @@ export const getAJourney = async (req: Request, res: Response) => {
   } else {
     journey = await db.journey.findFirst({
       where: {
-        id: req.params.journeyId,
+        id: +req.params.journeyId,
       },
       include: {
         driver: true,
@@ -240,7 +240,7 @@ export const getCurrentJourney = async (req: Request, res: Response) => {
 };
 
 export const cancelJourney = async (req: Request, res: Response) => {
-  const journeyId = req.params.journeyId;
+  const journeyId = +req.params.journeyId;
   const seat = await db.seat.findFirst({
     where: {
       journeyId,
@@ -261,9 +261,7 @@ export const getAllJourneys = async (req: Request, res: Response) => {
         where: {
           OR: [
             {
-              id: {
-                contains: req.query.search as string,
-              },
+              id: +req.query.search,
             },
             { date: { contains: req.query.search as string } },
             { destination: { contains: req.query.search as string } },
@@ -444,7 +442,7 @@ export async function bookSeat(req: Request, res: Response) {
 // ) => {
 //   const journey = await db.journey.update({
 //     where: {
-//       id: req.params.journeyId,
+//       id: +req.params.journeyId,
 //     },
 //     data: { ...req.body, userId: req.user!.id },
 //   });
@@ -454,14 +452,14 @@ export async function bookSeat(req: Request, res: Response) {
 
 // const deletejourney = async (req: Request, res: Response) => {
 //   try {
-//     await db.journey.findUniqueOrThrow({ where: { id: req.params.journeyId } });
+//     await db.journey.findUniqueOrThrow({ where: { id: +req.params.journeyId } });
 //   } catch (err) {
 //     return res.status(404).json({ message: "not found" });
 //   }
 
 //   const journey = await db.journey.delete({
 //     where: {
-//       id: req.params.journeyId,
+//       id: +req.params.journeyId,
 //     },
 //   });
 

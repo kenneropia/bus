@@ -115,7 +115,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 export const verifyUserById = async (req: Request, res: Response) => {
   const user = await db.user.update({
     where: {
-      id: req.params.userId,
+      id: +req.params.userId,
     },
     data: {
       verified: true,
@@ -127,7 +127,7 @@ export const verifyUserById = async (req: Request, res: Response) => {
 export const deleteUserById = async (req: Request, res: Response) => {
   const user = await db.user.delete({
     where: {
-      id: req.params.userId,
+      id: +req.params.userId,
     },
   });
   return res.json({ user });

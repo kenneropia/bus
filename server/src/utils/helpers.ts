@@ -7,7 +7,7 @@ import db from "../db";
 import { log } from "console";
 import { z } from "zod";
 import { roleEnum } from "src/user/user.schema";
-export const createToken = (user: { email: string; id: string }) => {
+export const createToken = (user: { email: string; id: number }) => {
   return jwt.sign(user, "thisShouldBeMovedToDotEnvLater", {
     expiresIn: 60 * 60 * 24 * 20,
   });
@@ -26,10 +26,10 @@ export const isAuth = async (
   // console.log(token);
 
   const payload = jwt.verify(token, "thisShouldBeMovedToDotEnvLater") as {
-    id: string;
+    id: number;
   };
   const user = await db.user.findUnique({
-    where: { id: payload.id },
+    where: { id: +payload.id },
   });
 
   if (!user) {
@@ -63,7 +63,7 @@ export const roleChecker =
     if (roles.includes(req.user.role)) return next();
     return res
       .status(403)
-      .json({ status: "error", message: "unauthorized access" });
+      .json({ status: "error", message: "unauthorized acess" });
   };
 
 export function getCurrentDate() {
