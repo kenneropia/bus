@@ -29,7 +29,7 @@ export const isAuth = async (
     id: string;
   };
   const user = await db.user.findUnique({
-    where: { id: payload.id },
+    where: { id: +payload.id },
   });
 
   if (!user) {
