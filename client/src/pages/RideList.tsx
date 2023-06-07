@@ -19,7 +19,7 @@ const ActionGroupForJourney = ({
   role: string;
   journeys: TypedJourney[];
 }) => {
-  const handleRideDelete = async (journeyId: string) => {
+  const handleRideDelete = async (journeyId: number) => {
     try {
       const response = await API.delete(`/journey/${journeyId}`);
       console.log(response);
@@ -32,7 +32,7 @@ const ActionGroupForJourney = ({
     }
   };
 
-  const handleRideFinish = async (journeyId: string) => {
+  const handleRideFinish = async (journeyId: number) => {
     try {
       const response = await API.patch(`/journey/${journeyId}/finish`);
       toast.success("Ride finished successfully");
