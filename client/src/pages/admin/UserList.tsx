@@ -25,7 +25,7 @@ const UserList = () => {
     setIsLoading(false);
   }, [search]);
 
-  const handleRejectUser = async (userId: string) => {
+  const handleRejectUser = async (userId: number) => {
     try {
       const shouldReject = confirm(
         "Are you sure, you want to delete this person?"
@@ -41,7 +41,7 @@ const UserList = () => {
       console.log(err);
     }
   };
-  const handleVerifyUser = async (userId: string) => {
+  const handleVerifyUser = async (userId: number) => {
     try {
       const {
         data: { user: newUser },

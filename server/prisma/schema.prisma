@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id            String     @id @default(uuid())
+  id            Int     @id @default(autoincrement())
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   email         String     @unique
@@ -23,27 +23,27 @@ model User {
 }
 
 model Journey {
-  id           String    @id @default(uuid())
+  id              Int     @id @default(autoincrement())
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   destination String
   section      String
   date         String
   driver       User      @relation(fields: [driverId], references: [id], onDelete: Cascade)
-  driverId     String
+  driverId     Int
   finished Boolean @default(false)
   seats     Seat[]
   @@unique([ destination, date, section])
 }
 
 model Seat {
-  id           String   @id @default(uuid())
+  id       Int     @id @default(autoincrement())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   seatNumber   Int
   journey      Journey? @relation(fields: [journeyId], references: [id], onDelete: Cascade)
-  journeyId    String
+  journeyId    Int
   student      User?    @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  studentId    String
+  studentId    Int
   @@unique([studentId, journeyId])
 }
